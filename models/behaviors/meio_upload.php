@@ -672,6 +672,11 @@ class MeioUploadBehavior extends ModelBehavior {
 			$data =& $model->data;
 		}
 		foreach ($this->__fields[$model->alias] as $fieldName => $options) {
+
+            // Patched by sandu@lungu.info on 08/28/2010: Added support for random filenames
+            $data[$model->alias]['_uniqid'] = Sl::uniqid();
+            // end of patch
+
 			// Take care of removal flagged field
 			// However, this seems to be kind of code duplicating, see line ~711
 			if (!empty($data[$model->alias][$fieldName]['remove'])) {
@@ -1087,8 +1092,12 @@ class MeioUploadBehavior extends ModelBehavior {
 		} else {
 			$model->validate[$fieldName] = array();
 		}
-		$model->validate[$fieldName] = $this->_arrayMerge($this->defaultValidations, $model->validate[$fieldName]);
+        
+        // Patched by sandu@lungu.info on 08/01/2010 - fixes a major configuration bug
 		$model->validate[$fieldName] = $this->_arrayMerge($options['validations'], $model->validate[$fieldName]);
+		$model->validate[$fieldName] = $this->_arrayMerge($this->defaultValidations, $model->validate[$fieldName]);
+        // End of patch
+        
 	}
 
 
